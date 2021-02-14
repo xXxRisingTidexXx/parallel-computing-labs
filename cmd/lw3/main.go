@@ -28,13 +28,13 @@ func main() {
 func consume(buckwheats <-chan parsing.Buckwheat) {
 	for buckwheat := range buckwheats {
 		log.Info(buckwheat)
-		time.Sleep(time.Millisecond * 500)
+		time.Sleep(time.Second)
 	}
 }
 
 func produce(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
 	parse(parser, buckwheats)
-	for range time.Tick(time.Second * 40) {
+	for range time.Tick(time.Minute * 2) {
 		parse(parser, buckwheats)
 	}
 }
