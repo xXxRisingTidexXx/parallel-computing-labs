@@ -22,6 +22,10 @@ type fozzyParser struct {
 	regexp *regexp.Regexp
 }
 
+func (p *fozzyParser) Name() string {
+	return "fozzy"
+}
+
 func (p *fozzyParser) ParseBuckwheats() ([]Buckwheat, error) {
 	document, err := p.helper.readDocument("https://fozzyshop.ua/300143-krupa-grechnevaya")
 	if err != nil {

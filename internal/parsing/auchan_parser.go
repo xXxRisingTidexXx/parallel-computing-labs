@@ -18,6 +18,10 @@ type auchanParser struct {
 	helper *helper
 }
 
+func (p *auchanParser) Name() string {
+	return "auchan"
+}
+
 func (p *auchanParser) ParseBuckwheats() ([]Buckwheat, error) {
 	document, err := p.helper.readDocument(
 		"https://auchan.zakaz.ua/uk/categories/buckwheat-auchan/",

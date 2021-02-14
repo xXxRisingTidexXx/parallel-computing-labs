@@ -22,6 +22,10 @@ type aquamarketParser struct {
 	regexp *regexp.Regexp
 }
 
+func (p *aquamarketParser) Name() string {
+	return "aquamarket"
+}
+
 func (p *aquamarketParser) ParseBuckwheats() ([]Buckwheat, error) {
 	document, err := p.helper.readDocument("https://aquamarket.ua/uk/1099-grechka")
 	if err != nil {

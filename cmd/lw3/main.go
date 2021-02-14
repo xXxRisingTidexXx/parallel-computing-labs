@@ -18,7 +18,7 @@ func main() {
 		parsing.NewFozzyParser(),
 	}
 	for _, parser := range parsers {
-		go publish(parser, buckwheats)
+		go produce(parser, buckwheats)
 	}
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
@@ -32,15 +32,20 @@ func consume(buckwheats <-chan parsing.Buckwheat) {
 	}
 }
 
-func publish(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
+func produce(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
+	parse(parser, buckwheats)
 	for range time.Tick(time.Second * 40) {
-		products, err := parser.ParseBuckwheats()
-		if err != nil {
-			log.Error(err)
-		} else {
-			for _, product := range products {
-				buckwheats <- product
-			}
+		parse(parser, buckwheats)
+	}
+}
+
+func parse(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
+	products, err := parser.ParseBuckwheats()
+	if err != nil {
+		log.WithField("parser", parser.Name()).Error(err)
+	} else {
+		for _, product := range products {
+			buckwheats <- product
 		}
 	}
 }
