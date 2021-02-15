@@ -10,8 +10,11 @@ import (
 )
 
 func main() {
-	buckwheats := make(chan parsing.Buckwheat, 300)
-	go consume(buckwheats)
+	log.SetFormatter(&log.JSONFormatter{})
+	buckwheats := make(chan parsing.Buckwheat, 50)
+	for i := 0; i < 5; i++ {
+		go consume(buckwheats, i)
+	}
 	parsers := []parsing.Parser{
 		parsing.NewAuchanParser(),
 		parsing.MewAquamarketParser(),
@@ -25,10 +28,10 @@ func main() {
 	<-signals
 }
 
-func consume(buckwheats <-chan parsing.Buckwheat) {
+func consume(buckwheats <-chan parsing.Buckwheat, i int) {
 	for buckwheat := range buckwheats {
-		log.Info(buckwheat)
-		time.Sleep(time.Millisecond * 100)
+		log.WithFields(log.Fields{"consumer": i, "buffer": len(buckwheats)}).Info(buckwheat.URL)
+		time.Sleep(time.Millisecond * 200)
 	}
 }
 
@@ -42,7 +45,7 @@ func produce(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
 func parse(parser parsing.Parser, buckwheats chan<- parsing.Buckwheat) {
 	products, err := parser.ParseBuckwheats()
 	if err != nil {
-		log.WithField("parser", parser.Name()).Error(err)
+		log.WithField("producer", parser.Name()).Error(err)
 	} else {
 		for _, product := range products {
 			buckwheats <- product
