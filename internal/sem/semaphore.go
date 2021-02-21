@@ -19,13 +19,6 @@ func (s *Semaphore) Lock() {
 	s.hits <- struct{}{}
 }
 
-
-
-
-
-
-
-
 func (s *Semaphore) Unlock() {
 	<-s.hits
 }
