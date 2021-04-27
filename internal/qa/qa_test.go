@@ -6,7 +6,7 @@ import (
 )
 
 func TestCompute(t *testing.T) {
-	positiveSpecs := []spec{
+	positiveSpecs := []computeSpec{
 		{2, 3, -0.875},
 		{5, 2, -1.025},
 		{11, 0, 5.5},
@@ -17,7 +17,7 @@ func TestCompute(t *testing.T) {
 	for _, s := range positiveSpecs {
 		testPositiveCompute(t, s)
 	}
-	negativeSpecs := []spec{
+	negativeSpecs := []computeSpec{
 		{0, 14, 0},
 		{0, 0, 2},
 		{0, -234, 0},
@@ -36,7 +36,7 @@ func TestCompute(t *testing.T) {
 	}
 }
 
-func testPositiveCompute(t *testing.T, s spec) {
+func testPositiveCompute(t *testing.T, s computeSpec) {
 	defer func() {
 		if p := recover(); p != nil {
 			t.Errorf("qa_test: f(%f, %f) caused %v", s.x, s.y, p)
@@ -47,7 +47,7 @@ func testPositiveCompute(t *testing.T, s spec) {
 	}
 }
 
-func testNegativeCompute(t *testing.T, s spec) {
+func testNegativeCompute(t *testing.T, s computeSpec) {
 	defer func() {
 		if recover() == nil {
 			t.Errorf("qa_test: f(%f, %f) caused no panic", s.x, s.y)

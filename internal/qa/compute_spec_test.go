@@ -1,6 +1,6 @@
 package qa_test
 
-type spec struct {
+type computeSpec struct {
 	x float64
 	y float64
 	a float64
