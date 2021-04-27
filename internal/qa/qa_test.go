@@ -61,3 +61,25 @@ func BenchmarkCompute(b *testing.B) {
 		_ = qa.Compute(12.29, -32.28)
 	}
 }
+
+func TestDescentCount(t *testing.T) {
+	specs := []descentCountSpec{
+		{[]float64{}, 0},
+		{[]float64{2}, 1},
+		{[]float64{0}, 1},
+		{[]float64{-400}, 1},
+		{[]float64{-400, -400}, 2},
+		{[]float64{2, 2, 2, 2, 2, 2, 2}, 7},
+		{[]float64{1, 2, 3, 4, 5, 6, 7}, 7},
+		{[]float64{7, 6, 5, 4, 3, 2, 1}, 1},
+		{[]float64{-7, -6, -5, -4, -3, -2, -1}, 7},
+		{[]float64{7, 6, 5, 4, 4, 2, 1}, 2},
+		{[]float64{7, 6, 5, 4, 4, 4, 1}, 3},
+		{[]float64{7, 6, 7, 4, 7, 4, 7}, 4},
+	}
+	for _, spec := range specs {
+		if count := qa.DescentCount(spec.a); count != spec.count {
+			t.Errorf("qa_test: f(%v), %d != %d", spec.a, count, spec.count)
+		}
+	}
+}
