@@ -83,3 +83,7 @@ func TestDescentCount(t *testing.T) {
 		}
 	}
 }
+
+func TestRecognizeShape(t *testing.T) {
+
+}
