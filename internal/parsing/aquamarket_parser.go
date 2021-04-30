@@ -10,16 +10,16 @@ import (
 	"time"
 )
 
+type aquamarketParser struct {
+	helper *helper
+	regexp *regexp.Regexp
+}
+
 func MewAquamarketParser() Parser {
 	return &aquamarketParser{
 		&helper{&http.Client{Timeout: time.Second * 10}},
 		regexp.MustCompile(`^.*, (\d+ \* )?(\d+) (к?г)(\W.*)?$`),
 	}
-}
-
-type aquamarketParser struct {
-	helper *helper
-	regexp *regexp.Regexp
 }
 
 func (p *aquamarketParser) Name() string {

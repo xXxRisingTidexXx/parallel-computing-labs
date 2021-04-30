@@ -10,12 +10,12 @@ import (
 	"time"
 )
 
-func NewAuchanParser() Parser {
-	return &auchanParser{&helper{&http.Client{Timeout: time.Second * 10}}}
-}
-
 type auchanParser struct {
 	helper *helper
+}
+
+func NewAuchanParser() Parser {
+	return &auchanParser{&helper{&http.Client{Timeout: time.Second * 10}}}
 }
 
 func (p *auchanParser) Name() string {

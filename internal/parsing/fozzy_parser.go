@@ -10,16 +10,16 @@ import (
 	"time"
 )
 
+type fozzyParser struct {
+	helper *helper
+	regexp *regexp.Regexp
+}
+
 func NewFozzyParser() Parser {
 	return &fozzyParser{
 		&helper{&http.Client{Timeout: time.Second * 15}},
 		regexp.MustCompile(`Фасовка: (\d+\*)?(\d+)(к?г)`),
 	}
-}
-
-type fozzyParser struct {
-	helper *helper
-	regexp *regexp.Regexp
 }
 
 func (p *fozzyParser) Name() string {
