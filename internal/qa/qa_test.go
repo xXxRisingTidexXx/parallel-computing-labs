@@ -112,3 +112,53 @@ func TestRecognizeShape(t *testing.T) {
 		}
 	}
 }
+
+func TestRecognizePosition1(t *testing.T) {
+	specs := []recognizePosition1Spec{
+		{3, 6, qa.InsideRectangle},
+		{2, 6, qa.InsideRectangle},
+		{3, 1, qa.InsideRectangle},
+		{3, 3, qa.InsideRectangle},
+		{1, 1, qa.OutsideBoth},
+		{2, 3, qa.InsideRectangle},
+		{4, 2, qa.InsideRectangle},
+		{0, 2, qa.OutsideBoth},
+	}
+	for _, spec := range specs {
+		position := qa.RecognizePosition1(spec.x, spec.y)
+		if position != spec.position {
+			t.Errorf(
+				"qa_test: f(%.1f, %.1f), %s != %s",
+				spec.x,
+				spec.y,
+				position,
+				spec.position,
+			)
+		}
+	}
+}
+
+func TestRecognizePosition2(t *testing.T) {
+	specs := []recognizePosition2Spec{
+		{2, 0, qa.InsideTriangle},
+		{2, 2, qa.OutsideTriangle},
+		{4, 3, qa.OutsideTriangle},
+		{4, 2, qa.OutsideTriangle},
+		{0, 2, qa.InsideTriangle},
+		{2, 1, qa.OutsideTriangle},
+		{3, 3, qa.OutsideTriangle},
+		{2, 4, qa.OutsideTriangle},
+	}
+	for _, spec := range specs {
+		position := qa.RecognizePosition2(spec.x, spec.y)
+		if position != spec.position {
+			t.Errorf(
+				"qa_test: f(%.1f, %.1f), %s != %s",
+				spec.x,
+				spec.y,
+				position,
+				spec.position,
+			)
+		}
+	}
+}
