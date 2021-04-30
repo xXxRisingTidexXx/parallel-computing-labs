@@ -85,5 +85,23 @@ func TestDescentCount(t *testing.T) {
 }
 
 func TestRecognizeShape(t *testing.T) {
-
+	specs := []recognizeShapeSpec{
+		{shape: qa.ParallelLines},
+	}
+	for _, spec := range specs {
+		shape := qa.RecognizeShape(spec.a, spec.b, spec.c, spec.d, spec.e, spec.f)
+		if shape != spec.shape {
+			t.Errorf(
+				"qa_test: f(%.1f, %.1f, %.1f, %.1f, %.1f, %.1f), %s != %s",
+				spec.a,
+				spec.b,
+				spec.c,
+				spec.d,
+				spec.e,
+				spec.f,
+				shape,
+				spec.shape,
+			)
+		}
+	}
 }
