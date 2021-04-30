@@ -86,10 +86,10 @@ func TestDescentCount(t *testing.T) {
 
 func TestRecognizeShape(t *testing.T) {
 	specs := []recognizeShapeSpec{
-		{f: 18, shape: qa.Inconsistency},
 		{a: -4.3, b: 4.4, c: -2.7, shape: qa.IntersectingLines},
 		{3.6, 0.4, -2.7, 6.8, -7, 3.3, qa.Hyperbola},
 		{shape: qa.ParallelLines},
+		{f: 18, shape: qa.ParallelLines},
 		{a: 2.8, f: -3, shape: qa.ParallelLines},
 		{a: 2.9, d: 3.6, e: -8.4, f: 0.9, shape: qa.Parabola},
 		{2.9, 0.7, 1.4, -5.4, -3.6, -6.8, qa.Ellipse},
