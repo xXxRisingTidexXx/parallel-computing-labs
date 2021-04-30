@@ -19,6 +19,9 @@ func DescentCount(a []float64) int { // 1
 }
 
 func RecognizeShape(a, b, c, d, e, f float64) Shape {
+	if a == 0 && b == 0 && c == 0 && d ==0 && e == 0 && f != 0 {
+		return Inconsistency
+	}
 	small := a*c - b*b
 	isComposite := a*c*f + 2*b*e*d - d*c*d - b*b*f - a*e*e == 0
 	if small < 0 {

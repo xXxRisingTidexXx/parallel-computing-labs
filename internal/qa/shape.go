@@ -3,7 +3,8 @@ package qa
 type Shape int
 
 const (
-	ImaginaryLines Shape = iota
+	Inconsistency Shape = iota
+	ImaginaryLines
 	ParallelLines
 	IntersectingLines
 	Hyperbola
@@ -13,6 +14,8 @@ const (
 
 func (s Shape) String() string {
 	switch s {
+	case Inconsistency:
+		return "Inconsistency"
 	case ImaginaryLines:
 		return "ImaginaryLines"
 	case ParallelLines:
