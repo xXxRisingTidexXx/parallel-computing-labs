@@ -38,3 +38,11 @@ func RecognizeShape(a, b, c, d, e, f float64) Shape {
 	}
 	return Ellipse
 }
+
+func RecognizePosition1() Position1 {
+	return OutsideBoth
+}
+
+func RecognizePosition2() Position2 {
+	return OutsideTriangle
+}
