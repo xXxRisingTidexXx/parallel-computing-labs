@@ -232,7 +232,6 @@ func TestParseSlice(t *testing.T) {
 func TestIntegration(t *testing.T) {
 	specs := []integrationSpec{
 		{"", true, []float64{}},
-		{"", true, []float64{}},
 		{"2", true, []float64{2}},
 		{"-5, 34.5", true, []float64{}},
 		{"0, 0, 0, 0, 0, 0", true, []float64{0, 0, 0, 0, 0, 0}},
