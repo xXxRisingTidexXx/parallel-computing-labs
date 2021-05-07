@@ -2,6 +2,8 @@ package qa
 
 import (
 	"math"
+	"strconv"
+	"strings"
 )
 
 func Compute(x, y float64) float64 {
@@ -58,4 +60,39 @@ func RecognizePosition2(x, y float64) Position2 {
 		return InsideTriangle
 	}
 	return OutsideTriangle
+}
+
+func CumulateMeans(a []float64) []float64 {
+	b := make([]float64, len(a))
+	for i := 0; i < len(a); i++ {
+		if i == 0 {
+			b[i] = a[i]
+		} else {
+			b[i] = (float64(i)*b[i-1] + a[i]) / (float64(i) + 1)
+		}
+	}
+	return b
+}
+
+func FilterEvens(a []float64) []float64 {
+	b := make([]float64, 0)
+	for i := 0; i < len(a); i++ {
+		if math.Mod(a[i], 2) == 0 {
+			b = append(b, a[i])
+		}
+	}
+	return b
+}
+
+func ParseSlice(s string) ([]float64, error) {
+	symbols := strings.Split(s, ", ")
+	numbers := make([]float64, len(symbols))
+	for i := range symbols {
+		number, err := strconv.ParseFloat(symbols[i], 64)
+		if err != nil {
+			return nil, err
+		}
+		numbers[i] = number
+	}
+	return numbers, nil
 }

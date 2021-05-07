@@ -2,6 +2,7 @@ package qa_test
 
 import (
 	"github.com/xXxRisingTidexXx/parallel-computing-labs/internal/qa"
+	"math"
 	"testing"
 )
 
@@ -125,8 +126,7 @@ func TestRecognizePosition1(t *testing.T) {
 		{0, 2, qa.OutsideBoth},
 	}
 	for _, spec := range specs {
-		position := qa.RecognizePosition1(spec.x, spec.y)
-		if position != spec.position {
+		if position := qa.RecognizePosition1(spec.x, spec.y); position != spec.position {
 			t.Errorf(
 				"qa_test: f(%.1f, %.1f), %s != %s",
 				spec.x,
@@ -150,8 +150,7 @@ func TestRecognizePosition2(t *testing.T) {
 		{2, 4, qa.OutsideTriangle},
 	}
 	for _, spec := range specs {
-		position := qa.RecognizePosition2(spec.x, spec.y)
-		if position != spec.position {
+		if position := qa.RecognizePosition2(spec.x, spec.y); position != spec.position {
 			t.Errorf(
 				"qa_test: f(%.1f, %.1f), %s != %s",
 				spec.x,
@@ -159,6 +158,101 @@ func TestRecognizePosition2(t *testing.T) {
 				position,
 				spec.position,
 			)
+		}
+	}
+}
+
+func TestCumulateMeans(t *testing.T) {
+	specs := []cumulateMeansSpec{
+		{},
+		{[]float64{2}, []float64{2}},
+		{[]float64{2, 54}, []float64{2, 28}},
+		{[]float64{-23, -1, 0, 26}, []float64{-23, -12, -8, 0.5}},
+		{[]float64{2, 2, 2, 2, 2, 2, 2}, []float64{2, 2, 2, 2, 2, 2, 2}},
+		{
+			[]float64{2, -2, 2, -2, 2, -2, 2},
+			[]float64{2, 0, 0.666666667, 0, 0.4, 0, 0.28571428},
+		},
+		{
+			[]float64{23, 28, 1, 8, 9, 0, 0.2},
+			[]float64{23, 25.5, 17.33333333, 15, 13.8, 11.5, 9.885714285},
+		},
+	}
+	for _, spec := range specs {
+		testSlices(t, spec.b, qa.CumulateMeans(spec.a))
+	}
+}
+
+func testSlices(t *testing.T, actual, predicted []float64) {
+	if len(actual) != len(predicted) {
+		t.Fatalf("qa_test: len(), %d != %d", len(actual), len(predicted))
+	}
+	for i := range predicted {
+		if math.Abs(actual[i] - predicted[i]) >= 0.000001 {
+			t.Errorf("qa_test: x[%d], %.12f != %.12f", i, actual[i], predicted[i])
+		}
+	}
+}
+
+func TestFilterEvens(t *testing.T) {
+	specs := []filterEvensSpec{
+		{},
+		{[]float64{2}, []float64{2}},
+		{[]float64{2, 28}, []float64{2, 28}},
+		{[]float64{-23, -12, -8, 0.5}, []float64{-12, -8}},
+		{[]float64{2, 2, 2, 2, 2, 2, 2}, []float64{2, 2, 2, 2, 2, 2, 2}},
+		{[]float64{2, 0, 0.666666667, 0, 0.4, 0, 0.28571428}, []float64{2, 0, 0, 0}},
+		{[]float64{23, 25.5, 17.33333333, 15, 13.8, 11.5, 9.885714285}, []float64{}},
+	}
+	for _, spec := range specs {
+		testSlices(t, spec.b, qa.FilterEvens(spec.a))
+	}
+}
+
+func TestParseSlice(t *testing.T) {
+	specs := []parseSliceSpec{
+		{"", true, []float64{}},
+		{"1", true, []float64{1}},
+		{"-5, 34.5", true, []float64{-5, 34.5}},
+		{"0, 0, 0, 0, 0, 0", true, []float64{0, 0, 0, 0, 0, 0}},
+		{s: "-2,,,,,45"},
+		{s: "-2   45"},
+		{s: "-2, 28.asd2383d, 45"},
+	}
+	for _, spec := range specs {
+		a, err := qa.ParseSlice(spec.s)
+		if spec.isValid {
+			testSlices(t, spec.a, a)
+		} else if err == nil {
+			t.Errorf("qa_test: f(%s), no error", spec.s)
+		}
+	}
+}
+
+func TestIntegration(t *testing.T) {
+	specs := []integrationSpec{
+		{"", true, []float64{}},
+		{"", true, []float64{}},
+		{"2", true, []float64{2}},
+		{"-5, 34.5", true, []float64{}},
+		{"0, 0, 0, 0, 0, 0", true, []float64{0, 0, 0, 0, 0, 0}},
+		{s: "-2,,,,,45"},
+		{s: "-2   45"},
+		{s: "-2, 28.asd2383d, 45"},
+		{"2, 54", true, []float64{2, 28}},
+		{"-23, -1, 0, 26", true, []float64{-12, -8}},
+		{
+			"2, -2, 2, -2, 2, -2, 2",
+			true,
+			[]float64{2, 0, 0, 0},
+		},
+	}
+	for _, spec := range specs {
+		a, err := qa.ParseSlice(spec.s)
+		if spec.isValid {
+			testSlices(t, spec.b, qa.FilterEvens(qa.CumulateMeans(a)))
+		} else if err == nil {
+			t.Errorf("qa_test: f(%s), no error", spec.s)
 		}
 	}
 }
