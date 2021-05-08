@@ -202,7 +202,7 @@ func TestParseSlice(t *testing.T) {
 		if spec.isValid {
 			testSlices(t, spec.a, a)
 		} else if err == nil {
-			t.Errorf("ParseSlice[%d] got no error", i)
+			t.Fatalf("ParseSlice[%d] got no error", i)
 		}
 	}
 }
@@ -229,7 +229,7 @@ func TestIntegration(t *testing.T) {
 		if spec.isValid {
 			testSlices(t, spec.b, qa.FilterEvens(qa.CumulateMeans(a)))
 		} else if err == nil {
-			t.Errorf("Integration[%d] got no error", i)
+			t.Fatalf("Integration[%d] got no error", i)
 		}
 	}
 }
@@ -273,5 +273,24 @@ func testWorkers(t *testing.T, actual, predicted []qa.Worker) {
 }
 
 func TestReadWorkersByOccupation(t *testing.T) {
-
+	specs := []readWorkersByOccupationSpec{
+		{},
+		{occupation: "plumber"},
+		{"Queen", []qa.Worker{{"Elizabeth II", "Queen", 304563.32, 68}}},
+		{
+			"Retailer",
+			[]qa.Worker{
+				{"Longbottom", "Retailer", 3058, 3.4},
+				{"Lazo", "Retailer", 428.2, 0.6},
+				{"Eko", "Retailer", 2109, 6},
+			},
+		},
+	}
+	for i, spec := range specs {
+		workers, err := qa.ReadWorkersByOccupation(spec.occupation)
+		if err != nil {
+			t.Fatalf("ReadWorkersByOccupation[%d] got an unexpected error, %v", i, err)
+		}
+		testWorkers(t, spec.workers, workers)
+	}
 }
