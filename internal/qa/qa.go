@@ -120,11 +120,25 @@ func ReadWorkersByOccupation(occupation string) ([]Worker, error) {
 	if err != nil {
 		return nil, err
 	}
-	occupied := make([]Worker, 0)
+	newWorkers := make([]Worker, 0)
 	for _, worker := range workers {
 		if worker.Occupation == occupation {
-			occupied = append(occupied, worker)
+			newWorkers = append(newWorkers, worker)
 		}
 	}
-	return occupied, nil
+	return newWorkers, nil
+}
+
+func ReadWorkersGTSalary(salary float64) ([]Worker, error) {
+	workers, err := ReadWorkers("testdata/workers.json")
+	if err != nil {
+		return nil, err
+	}
+	newWorkers := make([]Worker, 0)
+	for _, worker := range workers {
+		if worker.Salary > salary {
+			newWorkers = append(newWorkers, worker)
+		}
+	}
+	return newWorkers, nil
 }

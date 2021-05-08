@@ -166,7 +166,7 @@ func testSlices(t *testing.T, actual, predicted []float64) {
 		t.Fatalf("Slices lengths, %d != %d", len(actual), len(predicted))
 	}
 	for i := range predicted {
-		if math.Abs(actual[i] - predicted[i]) >= 0.000001 {
+		if math.Abs(actual[i]-predicted[i]) >= 0.000001 {
 			t.Errorf("Slices[%d], %.12f != %.12f", i, actual[i], predicted[i])
 		}
 	}
@@ -290,6 +290,54 @@ func TestReadWorkersByOccupation(t *testing.T) {
 		workers, err := qa.ReadWorkersByOccupation(spec.occupation)
 		if err != nil {
 			t.Fatalf("ReadWorkersByOccupation[%d] got an unexpected error, %v", i, err)
+		}
+		testWorkers(t, spec.workers, workers)
+	}
+}
+
+func TestReadWorkersGTSalary(t *testing.T) {
+	specs := []readWorkersGTSalarySpec{
+		{
+			workers: []qa.Worker{
+				{"Kadenchuk", "Plumber", 2137.9, 14},
+				{"Longbottom", "Retailer", 3058, 3.4},
+				{"Elizabeth II", "Queen", 304563.32, 68},
+				{"Lazo", "Retailer", 428.2, 0.6},
+				{"Che Guevara", "Minister of Industries", 12411.56, 7},
+				{"Eko", "Retailer", 2109, 6},
+				{"Awaji", "Plumber", 1203.5, 3.3},
+			},
+		},
+		{
+			-5000,
+			[]qa.Worker{
+				{"Kadenchuk", "Plumber", 2137.9, 14},
+				{"Antoshkin", "Technical writer", 0, 0},
+				{"Longbottom", "Retailer", 3058, 3.4},
+				{"Elizabeth II", "Queen", 304563.32, 68},
+				{"Lazo", "Retailer", 428.2, 0.6},
+				{"Che Guevara", "Minister of Industries", 12411.56, 7},
+				{"Eko", "Retailer", 2109, 6},
+				{"Awaji", "Plumber", 1203.5, 3.3},
+			},
+		},
+		{salary: 500000},
+		{
+			2000,
+			[]qa.Worker{
+				{"Kadenchuk", "Plumber", 2137.9, 14},
+				{"Longbottom", "Retailer", 3058, 3.4},
+				{"Elizabeth II", "Queen", 304563.32, 68},
+				{"Che Guevara", "Minister of Industries", 12411.56, 7},
+				{"Eko", "Retailer", 2109, 6},
+			},
+		},
+		{300000, []qa.Worker{{"Elizabeth II", "Queen", 304563.32, 68}}},
+	}
+	for i, spec := range specs {
+		workers, err := qa.ReadWorkersGTSalary(spec.salary)
+		if err != nil {
+			t.Fatalf("ReadWorkersGTSalary[%d] got an unexpected error, %v", i, err)
 		}
 		testWorkers(t, spec.workers, workers)
 	}
