@@ -1,0 +1,50 @@
+[
+  {
+    "surname": "Kadenchuk",
+    "occupation": "Plumber",
+    "salary": 2137.9,
+    "experience": 14
+  },
+  {
+    "surname": "Antoshkin",
+    "occupation": "Technical writer",
+    "salary": 0,
+    "experience": 0
+  },
+  {
+    "surname": "Longbottom",
+    "occupation": "Retailer",
+    "salary": 3058,
+    "experience": 3.4
+  },
+  {
+    "surname": "Elizabeth II",
+    "occupation": "Queen",
+    "salary": 304563.32,
+    "experience": 68
+  },
+  {
+    "surname": "Lazo",
+    "occupation": "Retailer",
+    "salary": 428.2,
+    "experience": 0.6
+  },
+  {
+    "surname": "Che Guevara",
+    "occupation": "Minister of Industries",
+    "salary": 12411.56,
+    "experience": 7
+  },
+  {
+    "surname": "Eko",
+    "occupation": "Retailer",
+    "salary": 2109,
+    "experience": 6
+  },
+  {
+    "surname": "Awaji",
+    "occupation": "Plumber",
+    "salary": 1203.5,
+    "experience": 3.3
+  }
+]
