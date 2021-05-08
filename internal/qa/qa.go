@@ -1,7 +1,9 @@
 package qa
 
 import (
+	"encoding/json"
 	"math"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -95,4 +97,34 @@ func ParseSlice(s string) ([]float64, error) {
 		numbers[i] = number
 	}
 	return numbers, nil
+}
+
+func ReadWorkers(path string) ([]Worker, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	var workers []Worker
+	if err := json.NewDecoder(file).Decode(&workers); err != nil {
+		_ = file.Close()
+		return nil, err
+	}
+	if err := file.Close(); err != nil {
+		return nil, err
+	}
+	return workers, nil
+}
+
+func ReadWorkersByOccupation(occupation string) ([]Worker, error) {
+	workers, err := ReadWorkers("testdata/workers.json")
+	if err != nil {
+		return nil, err
+	}
+	occupied := make([]Worker, 0)
+	for _, worker := range workers {
+		if worker.Occupation == occupation {
+			occupied = append(occupied, worker)
+		}
+	}
+	return occupied, nil
 }

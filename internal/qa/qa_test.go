@@ -40,18 +40,18 @@ func TestCompute(t *testing.T) {
 func testPositiveCompute(t *testing.T, s computeSpec) {
 	defer func() {
 		if p := recover(); p != nil {
-			t.Errorf("qa_test: f(%f, %f) caused %v", s.x, s.y, p)
+			t.Errorf("Compute(%f, %f) caused %v", s.x, s.y, p)
 		}
 	}()
 	if a := qa.Compute(s.x, s.y); a != s.a {
-		t.Errorf("qa_test: f(%f, %f), %.12f != %.12f", s.x, s.y, a, s.a)
+		t.Errorf("Compute(%f, %f), %.12f != %.12f", s.x, s.y, a, s.a)
 	}
 }
 
 func testNegativeCompute(t *testing.T, s computeSpec) {
 	defer func() {
 		if recover() == nil {
-			t.Errorf("qa_test: f(%f, %f) caused no panic", s.x, s.y)
+			t.Errorf("Compute(%f, %f) caused no panic", s.x, s.y)
 		}
 	}()
 	_ = qa.Compute(s.x, s.y)
@@ -78,9 +78,9 @@ func TestDescentCount(t *testing.T) {
 		{[]float64{7, 6, 5, 4, 4, 4, 1}, 3},
 		{[]float64{7, 6, 7, 4, 7, 4, 7}, 4},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		if count := qa.DescentCount(spec.a); count != spec.count {
-			t.Errorf("qa_test: f(%v), %d != %d", spec.a, count, spec.count)
+			t.Errorf("DescentCount[%d], %d != %d", i, count, spec.count)
 		}
 	}
 }
@@ -96,20 +96,10 @@ func TestRecognizeShape(t *testing.T) {
 		{2.9, 0.7, 1.4, -5.4, -3.6, -6.8, qa.Ellipse},
 		{a: 2.9, b: 0.7, c: 1.4, shape: qa.ImaginaryLines},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		shape := qa.RecognizeShape(spec.a, spec.b, spec.c, spec.d, spec.e, spec.f)
 		if shape != spec.shape {
-			t.Errorf(
-				"qa_test: f(%.1f, %.1f, %.1f, %.1f, %.1f, %.1f), %s != %s",
-				spec.a,
-				spec.b,
-				spec.c,
-				spec.d,
-				spec.e,
-				spec.f,
-				shape,
-				spec.shape,
-			)
+			t.Errorf("RecognizeShape[%d], %s != %s", i, shape, spec.shape)
 		}
 	}
 }
@@ -125,15 +115,9 @@ func TestRecognizePosition1(t *testing.T) {
 		{4, 2, qa.InsideRectangle},
 		{0, 2, qa.OutsideBoth},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		if position := qa.RecognizePosition1(spec.x, spec.y); position != spec.position {
-			t.Errorf(
-				"qa_test: f(%.1f, %.1f), %s != %s",
-				spec.x,
-				spec.y,
-				position,
-				spec.position,
-			)
+			t.Errorf("RecognizePosition1[%d], %s != %s", i, position, spec.position)
 		}
 	}
 }
@@ -149,15 +133,9 @@ func TestRecognizePosition2(t *testing.T) {
 		{3, 3, qa.OutsideTriangle},
 		{2, 4, qa.OutsideTriangle},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		if position := qa.RecognizePosition2(spec.x, spec.y); position != spec.position {
-			t.Errorf(
-				"qa_test: f(%.1f, %.1f), %s != %s",
-				spec.x,
-				spec.y,
-				position,
-				spec.position,
-			)
+			t.Errorf("RecognizePosition2[%d], %s != %s", i, position, spec.position)
 		}
 	}
 }
@@ -185,11 +163,11 @@ func TestCumulateMeans(t *testing.T) {
 
 func testSlices(t *testing.T, actual, predicted []float64) {
 	if len(actual) != len(predicted) {
-		t.Fatalf("qa_test: len(), %d != %d", len(actual), len(predicted))
+		t.Fatalf("Slices lengths, %d != %d", len(actual), len(predicted))
 	}
 	for i := range predicted {
 		if math.Abs(actual[i] - predicted[i]) >= 0.000001 {
-			t.Errorf("qa_test: x[%d], %.12f != %.12f", i, actual[i], predicted[i])
+			t.Errorf("Slices[%d], %.12f != %.12f", i, actual[i], predicted[i])
 		}
 	}
 }
@@ -219,12 +197,12 @@ func TestParseSlice(t *testing.T) {
 		{s: "-2   45"},
 		{s: "-2, 28.asd2383d, 45"},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		a, err := qa.ParseSlice(spec.s)
 		if spec.isValid {
 			testSlices(t, spec.a, a)
 		} else if err == nil {
-			t.Errorf("qa_test: f(%s), no error", spec.s)
+			t.Errorf("ParseSlice[%d] got no error", i)
 		}
 	}
 }
@@ -246,12 +224,54 @@ func TestIntegration(t *testing.T) {
 			[]float64{2, 0, 0, 0},
 		},
 	}
-	for _, spec := range specs {
+	for i, spec := range specs {
 		a, err := qa.ParseSlice(spec.s)
 		if spec.isValid {
 			testSlices(t, spec.b, qa.FilterEvens(qa.CumulateMeans(a)))
 		} else if err == nil {
-			t.Errorf("qa_test: f(%s), no error", spec.s)
+			t.Errorf("Integration[%d] got no error", i)
 		}
 	}
+}
+
+func TestReadWorkers(t *testing.T) {
+	if _, err := qa.ReadWorkers("something.json"); err == nil {
+		t.Fatal("ReadWorkers got no error for something.json")
+	}
+	if _, err := qa.ReadWorkers("testdata/workers.yaml"); err == nil {
+		t.Fatal("ReadWorkers got no error for testdata/workers.yaml")
+	}
+	predicted, err := qa.ReadWorkers("testdata/workers.json")
+	if err != nil {
+		t.Fatalf("ReadWorkers got an unexpected error, %v", err)
+	}
+	testWorkers(
+		t,
+		[]qa.Worker{
+			{"Kadenchuk", "Plumber", 2137.9, 14},
+			{"Antoshkin", "Technical writer", 0, 0},
+			{"Longbottom", "Retailer", 3058, 3.4},
+			{"Elizabeth II", "Queen", 304563.32, 68},
+			{"Lazo", "Retailer", 428.2, 0.6},
+			{"Che Guevara", "Minister of Industries", 12411.56, 7},
+			{"Eko", "Retailer", 2109, 6},
+			{"Awaji", "Plumber", 1203.5, 3.3},
+		},
+		predicted,
+	)
+}
+
+func testWorkers(t *testing.T, actual, predicted []qa.Worker) {
+	if len(actual) != len(predicted) {
+		t.Fatalf("Workers lengths, %d != %d", len(actual), len(predicted))
+	}
+	for i := range actual {
+		if actual[i] != predicted[i] {
+			t.Errorf("Workers[%d], %v != %v", i, actual[i], predicted[i])
+		}
+	}
+}
+
+func TestReadWorkersByOccupation(t *testing.T) {
+
 }
