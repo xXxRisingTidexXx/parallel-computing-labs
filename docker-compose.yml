@@ -12,10 +12,21 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/migrate.dockerfile
+    image: search-migrate
+    container_name: rampart-migrate
+    entrypoint: ./wait-for search-database:5432 -t 10 -- migrate
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      - database
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/app.dockerfile
     image: search-app
     container_name: search-app
     command:
