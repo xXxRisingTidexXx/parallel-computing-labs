@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:13.2-alpine
+    container_name: search-database
+    ports:
+      - 5432:5432
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: search
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: search-app
+    container_name: search-app
+    command:
+      - ./wait-for
+      - search-database:5432
+      - -t
+      - '10'
+      - --
+      - go
+      - run
+      - github.com/xXxRisingTidexXx/parallel-computing-labs/cmd/lw10
+    volumes:
+      - ./go.mod:/go/src/app/go.mod
+      - ./go.sum:/go/src/app/go.sum
+      - ./cmd:/go/src/app/cmd
+      - ./internal:/go/src/app/internal
+    environment:
+      SEARCH_DSN: postgres://postgres:postgres@search-database:5432/search?sslmode=disable
+    depends_on:
+      - database
+volumes:
+  database:
+    name: search-database
+networks:
+  default:
+    name: search-default
