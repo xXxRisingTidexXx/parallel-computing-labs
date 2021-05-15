@@ -53,7 +53,7 @@ services:
       dockerfile: docker/mpi.dockerfile
     image: pp-mpi
     container_name: pp-mpi
-    command: mpicc --version
+    command: mpiexec --allow-run-as-root -n 4 python -m mpi4py.bench helloworld
 volumes:
   database:
     name: pp-database
