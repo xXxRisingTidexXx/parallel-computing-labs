@@ -1,4 +1,5 @@
 .lets
+venv
 bin
 docker
 docker-compose.yml
