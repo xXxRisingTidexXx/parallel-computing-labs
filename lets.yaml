@@ -1,5 +1,10 @@
 shell: bash
 commands:
+  migrate:
+    description: Upgrades the DB to the latest version
+    cmd: |
+      docker-compose run --rm migrate -path migrations -database postgres://postgres:postgres@pp-database:5432/pp?sslmode=disable up
+      docker-compose down
   app:
     description: Plays the search script
     cmd: |

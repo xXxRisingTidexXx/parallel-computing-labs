@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("postgres", os.Getenv("SEARCH_DSN"))
+	db, err := sql.Open("postgres", os.Getenv("PP_DSN"))
 	if err != nil {
 		log.Fatal(err)
 	}

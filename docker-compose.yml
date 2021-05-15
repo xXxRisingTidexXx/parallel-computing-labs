@@ -2,13 +2,13 @@ version: '3.8'
 services:
   database:
     image: postgres:13.2-alpine
-    container_name: search-database
+    container_name: pp-database
     ports:
       - 5432:5432
     volumes:
       - database:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: search
+      POSTGRES_DB: pp
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data
@@ -16,9 +16,9 @@ services:
     build:
       context: .
       dockerfile: docker/migrate.dockerfile
-    image: search-migrate
-    container_name: rampart-migrate
-    entrypoint: ./wait-for search-database:5432 -t 10 -- migrate
+    image: pp-migrate
+    container_name: pp-migrate
+    entrypoint: ./wait-for pp-database:5432 -t 10 -- migrate
     volumes:
       - ./migrations:/migrations
     depends_on:
@@ -27,11 +27,11 @@ services:
     build:
       context: .
       dockerfile: docker/app.dockerfile
-    image: search-app
-    container_name: search-app
+    image: pp-app
+    container_name: pp-app
     command:
       - ./wait-for
-      - search-database:5432
+      - pp-database:5432
       - -t
       - '10'
       - --
@@ -44,12 +44,12 @@ services:
       - ./cmd:/go/src/app/cmd
       - ./internal:/go/src/app/internal
     environment:
-      SEARCH_DSN: postgres://postgres:postgres@search-database:5432/search?sslmode=disable
+      PP_DSN: postgres://postgres:postgres@pp-database:5432/pp?sslmode=disable
     depends_on:
       - database
 volumes:
   database:
-    name: search-database
+    name: pp-database
 networks:
   default:
-    name: search-default
+    name: pp-default
