@@ -1,0 +1,7 @@
+shell: bash
+commands:
+  app:
+    description: Plays the search script
+    cmd: |
+      docker-compose run --rm app
+      docker-compose down
