@@ -47,6 +47,13 @@ services:
       PP_DSN: postgres://postgres:postgres@pp-database:5432/pp?sslmode=disable
     depends_on:
       - database
+  mpi:
+    build:
+      context: .
+      dockerfile: docker/mpi.dockerfile
+    image: pp-mpi
+    container_name: pp-mpi
+    command: mpicc --showme:version
 volumes:
   database:
     name: pp-database

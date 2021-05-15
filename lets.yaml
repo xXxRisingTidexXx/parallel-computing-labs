@@ -10,3 +10,8 @@ commands:
     cmd: |
       docker-compose run --rm app
       docker-compose down
+  mpi:
+    description: Ups an OpenMPI cluster
+    cmd: |
+      docker-compose run --rm mpi
+      docker-compose down
