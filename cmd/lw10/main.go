@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"github.com/lib/pq"
-	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"sync"
