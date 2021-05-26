@@ -47,7 +47,7 @@ func main() {
 	}
 	quits, starts := make(chan struct{}, 1), make(chan time.Time, 1)
 	go writeToSocket(data, listener, quits, starts)
-	for i := 0; i < 1; i++ {
+	for i := 0; i < trials; i++ {
 		conn, err := net.Dial("tcp", address)
 		if err != nil {
 			log.Fatal(err)
